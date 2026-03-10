@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HillCipherController;
+use App\Http\Controllers\CipherController;
 
-Route::post('/hill/encrypt', [HillCipherController::class, 'encrypt']);
-Route::post('/hill/decrypt', [HillCipherController::class, 'decrypt']);
+Route::get('/caesar', [CipherController::class, 'index']);
+Route::post('/caesar', [CipherController::class, 'process']);
 
 Route::get('/hill', function () {
     return view('hill');
