@@ -3,29 +3,31 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
+use App\Models\User; // WAJIB
 
 class PenggunaController extends Controller
 {
-    // 🔒 Proteksi login
-    public function __construct()
-    {
-        if (!session('login')) {
-            redirect('/login')->send();
-        }
-    }
-
     public function index()
     {
-        $data = User::all();
-        return view('pengguna.index', compact('data'));
+        if (!session('login')) {
+            return redirect('/login');
+        }
+
+        $data = User::all(); // ambil semua data dari tabel pengguna
+
+        return view('pengguna', compact('data'));
     }
 
     public function store(Request $request)
     {
+        if (!session('login')) {
+            return redirect('/login');
+        }
+
         User::create([
+            'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password)
+            'password' => bcrypt($request->password),
         ]);
 
         return redirect('/pengguna');
@@ -33,9 +35,15 @@ class PenggunaController extends Controller
 
     public function update(Request $request, $id)
     {
+        if (!session('login')) {
+            return redirect('/login');
+        }
+
         $user = User::find($id);
+
         $user->update([
-            'email' => $request->email
+            'name' => $request->name,
+            'email' => $request->email,
         ]);
 
         return redirect('/pengguna');
@@ -43,7 +51,12 @@ class PenggunaController extends Controller
 
     public function destroy($id)
     {
-        User::destroy($id);
+        if (!session('login')) {
+            return redirect('/login');
+        }
+
+        User::find($id)->delete();
+
         return redirect('/pengguna');
     }
 }
